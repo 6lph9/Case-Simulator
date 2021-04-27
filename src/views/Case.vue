@@ -3,7 +3,7 @@
     <h1>This is an case page</h1>
     <button @click="unbox('Prisma Case')">Open Prisma</button>
     <img :src="currentSkin.full_icon_url" :alt="currentSkin.name">
-    <h1>{{  }} {{ currentSkin.name }}</h1>
+    <h1>{{ currentSkin.special }} {{ currentSkin.name }}</h1>
     <h2>{{ currentSkin.rarity }}</h2>
     <h2>{{ currentSkin.float }} | {{ currentSkin.condition }}</h2>
     <h3>{{ currentSkin.case }}</h3>
@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
-import caseData from '@/data/cases.json'
+import { defineComponent } from 'vue'
+import caseData from '@/testData/cases.json'
 
 export default defineComponent({
   name: 'Case',
@@ -59,7 +59,10 @@ export default defineComponent({
         const skin = possible_skins[(this.randomNumber(1, possible_skins.length) - 1)]
         console.log(skin)
 
-        const isStatTrack = this.isStatTrack()
+        let special
+        const isStatTrack = this.isStatTrak()
+        if (isStatTrack) special = 'StatTrak™'
+
         const float = this.createFloat(skin.min, skin.max)
         const condition = this.getCondition(float)
 
@@ -82,7 +85,8 @@ export default defineComponent({
           condition: condition,
           price,
           icon_url,
-          full_icon_url: `https://steamcommunity-a.akamaihd.net/economy/image/${icon_url}`
+          full_icon_url: `https://steamcommunity-a.akamaihd.net/economy/image/${icon_url}`,
+          special
         }
         this.currentSkin = unboxed_item
       }
@@ -112,7 +116,7 @@ export default defineComponent({
       else return 'FUCK YOU'
     },
 
-    isStatTrack () {
+    isStatTrak () {
       const statTrackChance = this.randomNumber(1, 10)
       if (statTrackChance === 10) {
         window.alert('STATTRACK')

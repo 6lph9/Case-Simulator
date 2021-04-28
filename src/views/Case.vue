@@ -1,15 +1,19 @@
 <template>
   <div class="case">
     <div v-for="container in openableContainers" :key="container.name">
-      <img :src="container.asset_description.icon_url" :alt="container.name">
+      <img :src="'https://steamcommunity-a.akamaihd.net/economy/image/' + container.asset_description.icon_url" :alt="container.name">
+      <h3>{{ container.name }}</h3>
+      <button>Unbox</button> <!-- @click Open Case Component-->
     </div>
-    <!-- Actually opening case -->
-    <button @click="unbox('Prisma Case')">Open Prisma</button>
-    <img :src="currentSkin.full_icon_url" :alt="currentSkin.name">
-    <h1>{{ currentSkin.special }} {{ currentSkin.name }}</h1>
-    <h2>{{ currentSkin.rarity }}</h2>
-    <h2>{{ currentSkin.float }} | {{ currentSkin.condition }}</h2>
-    <h3>{{ currentSkin.case }}</h3>
+    <!-- Actually opening case - Componement -->
+    <div>
+      <button @click="unbox(container.name)">Open Prisma</button>
+      <img :src="currentSkin.full_icon_url" :alt="currentSkin.name">
+      <h1>{{ currentSkin.special }} {{ currentSkin.name }}</h1>
+      <h2>{{ currentSkin.rarity }}</h2>
+      <h2>{{ currentSkin.float }} | {{ currentSkin.condition }}</h2>
+      <h3>{{ currentSkin.case }}</h3>
+    </div>
   </div>
 </template>
 
@@ -21,18 +25,20 @@ export default defineComponent({
   name: 'Case',
   components: {},
   data () {
-    const openableContainers = []
+    const openableContainers: any[] = []
 
+    const container = {}
     const totalCasesOpened = 0
     const spent = 0
     const profit = 0
     const openedSkins = []
     const currentSkin = {}
-    return { currentSkin }
+    return { currentSkin, container, openableContainers }
   },
 
   methods: {
     unbox (container: string) {
+      // instead of going through all case-data => get case b4 & save to this.container (@created/mounted)
       let searched_container: any
 
       caseData.forEach((element: any) => {
@@ -56,13 +62,13 @@ export default defineComponent({
         const float = this.createFloat(skin.min, skin.max)
         const condition = this.getCondition(float)
 
-        const isStatTrack = this.isStatTrak()
+        const isStatTrak = this.isStatTrak()
 
         let special
         let price
         let icon_url
 
-        if (isStatTrack) {
+        if (isStatTrak) {
           special = 'StatTrak™'
           price = skin.conditions.StatTrack[condition].sell_price
           icon_url = skin.conditions.StatTrack[condition].icon_url
@@ -112,11 +118,8 @@ export default defineComponent({
     },
 
     isStatTrak () {
-      const statTrackChance = this.randomNumber(1, 10)
-      if (statTrackChance === 10) {
-        window.alert('STATTRACK')
-        return true
-      }
+      const statTrakChance = this.randomNumber(1, 10)
+      if (statTrakChance === 10) return true
       return false
     },
 

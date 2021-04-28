@@ -7,7 +7,6 @@
     <h2>{{ currentSkin.rarity }}</h2>
     <h2>{{ currentSkin.float }} | {{ currentSkin.condition }}</h2>
     <h3>{{ currentSkin.case }}</h3>
-    <h5>{{ currentSkin.icon_url }}</h5>
   </div>
 </template>
 

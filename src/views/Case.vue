@@ -1,24 +1,28 @@
 <template>
   <div class="case">
-    <h1>This is an case page</h1>
+    <div v-for="container in openableContainers" :key="container.name">
+      <img :src="container.asset_description.icon_url" :alt="container.name">
+    </div>
+    <!-- Actually opening case -->
     <button @click="unbox('Prisma Case')">Open Prisma</button>
     <img :src="currentSkin.full_icon_url" :alt="currentSkin.name">
     <h1>{{ currentSkin.special }} {{ currentSkin.name }}</h1>
     <h2>{{ currentSkin.rarity }}</h2>
     <h2>{{ currentSkin.float }} | {{ currentSkin.condition }}</h2>
     <h3>{{ currentSkin.case }}</h3>
-    <h5>{{ currentSkin.icon_url }}</h5>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import caseData from '@/testData/cases.json'
-
+// create componement for Actually opening case
 export default defineComponent({
   name: 'Case',
   components: {},
   data () {
+    const openableContainers = []
+
     const totalCasesOpened = 0
     const spent = 0
     const profit = 0
@@ -26,17 +30,6 @@ export default defineComponent({
     const currentSkin = {}
     return { currentSkin }
   },
-  /*
-  setup () {
-    const caseState = reactive({
-      totalCasesOpened: 0,
-      spent: 0,
-      profit: 0,
-      openedSkins: [],
-      currentSkin: ''
-    })
-  },
-  */
 
   methods: {
     unbox (container: string) {
@@ -44,7 +37,6 @@ export default defineComponent({
 
       caseData.forEach((element: any) => {
         if (element.name === container) {
-          console.log('yessir')
           searched_container = element
         }
       })
@@ -59,23 +51,25 @@ export default defineComponent({
         const skin = possible_skins[(this.randomNumber(1, possible_skins.length) - 1)]
         console.log(skin)
 
-        let special
-        const isStatTrack = this.isStatTrak()
-        if (isStatTrack) special = 'StatTrak™'
+
 
         const float = this.createFloat(skin.min, skin.max)
         const condition = this.getCondition(float)
 
+        const isStatTrack = this.isStatTrak()
+
+        let special
         let price
         let icon_url
+
         if (isStatTrack) {
+          special = 'StatTrak™'
           price = skin.conditions.StatTrack[condition].sell_price
           icon_url = skin.conditions.StatTrack[condition].icon_url
         } else {
           price = skin.conditions[condition].sell_price
           icon_url = skin.conditions[condition].icon_url
         }
-        console.log('Price: ', price)
 
         const unboxed_item = {
           name: skin.name,
@@ -88,6 +82,7 @@ export default defineComponent({
           full_icon_url: `https://steamcommunity-a.akamaihd.net/economy/image/${icon_url}`,
           special
         }
+        console.log(unboxed_item)
         this.currentSkin = unboxed_item
       }
     },

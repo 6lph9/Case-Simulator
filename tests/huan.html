@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    </head>
+<body>
+    <div id="cardList"><!--
+    --><div class="card common">Common</div><!--
+    --><div class="card rare">Rare</div><!--
+    --><div class="card mythical">M</div><!--
+    --><div class="card legendary">L</div><!--
+--></div>
+<button onclick="spin" id="spin">Spin</button>
+</body>
+<style>
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+#cardList {
+  height: 100px;
+  width: 302px;
+  position: relative;
+  margin: 10px;
+  border: 1px solid #33e;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.card {
+  display: inline-block;
+  text-align: center;
+  height: 100px;
+  width: 100px;
+  line-height: 100px;
+  background-color: #99e;
+  font-family: monospace;
+  font-size: 2em;
+  color: #444;
+  border-left: 1px solid #33e;
+  border-right: 1px solid #33e;
+  background-color: brown;
+}
+
+#cardList::before,
+#cardList::after {
+  content: '';
+  display: block;
+  z-index: 100;
+  width: 0px;
+  height: 0px;
+  transform: translateX(-50%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+
+#cardList::before {
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  border-top: 12px solid #33e;
+}
+
+#cardList::after {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  border-bottom: 12px solid #33e;
+}
+</style>
+<script>
+const cards = document.getElementsByClassName('card')
+const cardContainer = document.getElementById('cardList')
+const speed 		= 1000,
+    width 		= 100, 
+    randomize 	= true, 
+    distance 	= 20 * width 
+;
+
+for (let i = 0; i < 50; i++) {
+    const clonedCard = cards.cloneNode(true)
+    cardContainer.appendChild(clonedCard)
+}
+
+function spin() {
+    var newMargin = 0, newDistance = distance;
+    if (randomize) {
+        newDistance = Math.floor(Math.random() * cards.length * 5);
+		    newDistance += cards.length * 10;
+        var rand = Math.floor((Math.random()*100)+1);
+        newDistance *= rand;
+    } 
+    newMargin = -(newDistance);
+    /*
+    cards.first().animate({
+        marginLeft: newMargin
+    }, 7500);
+    */
+   const firstCard = cards[0]
+   console.log(firstCard)
+   firstCard.animate({
+              top: ['8px', '280px']
+                 },{ duration: 5000,        // number in ms [this would be equiv of your speed].
+                     easing: 'ease-in-out',
+                     iterations: 1,         // infinity or a number.
+                  // fill: ''
+        });   
+}
+</script>
+</html>

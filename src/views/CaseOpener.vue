@@ -195,9 +195,10 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 .caseOpeningArea {
   margin-top: 20px;
+  background-color: #ff0000
 }
 
 .itemBoxAn {

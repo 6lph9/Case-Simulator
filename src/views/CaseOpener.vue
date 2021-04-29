@@ -1,46 +1,40 @@
 <template>
   <div id="case-opening">
     <div>
-      <div class="container-fluid caseOpeningArea">
-        <div class="row">
-          <div  class="container animationAreaItems">
-            <div class="row">
-              <div class="row text-center flex-nowrap mx-auto">
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn itemBoxAnW">    </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-                  <div class="itemBoxAn">  </div>
-              </div>
-            </div>
-          </div>
+      <div class="container animationAreaItems">
+        <div class="row text-center flex-nowrap mx-auto">
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn itemBoxAnW">    </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
+          <div class="itemBoxAn">  </div>
         </div>
       </div>
       <button class="btn" id="openContainer" @click="unbox(data.container.content)">Open Prisma</button>
@@ -130,6 +124,7 @@ export default defineComponent({
       if (unboxedSkin.rarity === 'Covert' || !unboxedSkin.rarity) {
         console.warn(unboxedSkin)
       }
+      startRoll()
 
       data.openedSkins.push(unboxedSkin)
       data.unboxedSkin = unboxedSkin
@@ -137,8 +132,8 @@ export default defineComponent({
       return { unboxedSkin }
     }
 
-    const startRoll = () => {
-      const openCaseBtn = document.getElementById('openContainer')
+    function startRoll () {
+      const openCaseBtn = document.querySelector('#openContainer')
       if (openCaseBtn) {
         openCaseBtn.innerHTML = 'Rolling ...'
         openCaseBtn.classList.add('disabled')
@@ -149,7 +144,16 @@ export default defineComponent({
       var landLine = lineArrays[Math.floor(Math.random() * lineArrays.length)]
       console.log(landLine)
 
-      const itemBoxAn = document.getElementsByClassName('openContainer')
+      const firstSlot = document.querySelector('.itemBoxAn')
+      if (firstSlot) {
+        firstSlot.animate(
+          { right: landLine },
+          {
+            duration: 12000,
+            easing: 'ease-in-out'
+          }
+        )
+      }
     }
 
     const getRarity = () => {
@@ -196,11 +200,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.caseOpeningArea {
-  margin-top: 20px;
-  background-color: #ff0000
-}
-
 .itemBoxAn {
   border-radius: 0px !important;
   border: none !important;
@@ -210,10 +209,6 @@ export default defineComponent({
   height: 165px;
   background: cyan !important;
   position: relative;
-}
-
-.itemBoxAn.animate {
-  transition: left 500ms ease-in-out, top 500ms ease-in-out;
 }
 
 .itemBoxAnW {

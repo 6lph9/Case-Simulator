@@ -3,7 +3,7 @@
     <div v-for="container in openableContainers" :key="container.name">
       <img :src="'https://steamcommunity-a.akamaihd.net/economy/image/' + container.asset_description.icon_url" :alt="container.name">
       <h3>{{ container.name }}</h3>
-      <button @click="displayContainerPage(container)">Unbox</button> <!-- @click Open Case Component-->
+      <button class="btn" @click="displayContainerPage(container)">Unbox</button> <!-- @click Open Case Component-->
     </div>
     <case-opener-comp :container="container" />
   </div>

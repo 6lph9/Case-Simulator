@@ -11,7 +11,7 @@
             :rarity="item.rarity" />
         </div>
       </div>
-      <button class="btn btn-info" id="openContainer" @click="unbox(container.content)">Open Prisma</button>
+      <button class="btn btn-info" id="openContainer" @click="unbox(container.content)">Open {{ container.name }}</button>
     </div>
 
     <div>
@@ -105,6 +105,8 @@ export default defineComponent({
     })
 
     const unbox = (containerContent: any[][]) => {
+      data.openingContainer = true
+
       const rarity = getRarity()
 
       const possibleSkins = containerContent[rarity]
@@ -145,10 +147,9 @@ export default defineComponent({
         console.warn(unboxedSkin)
       }
 
-      data.openingContainer = true
       containerItems.value = createContainerItems(containerContent, 50)
 
-      startRoll()
+      startRoll(container.name)
 
       openedSkins.value.push(unboxedSkin)
       data.unboxedSkin = unboxedSkin
@@ -156,11 +157,11 @@ export default defineComponent({
       return { unboxedSkin }
     }
 
-    function startRoll () {
+    function startRoll (containerName: string) {
       const openCaseBtn = document.querySelector('#openContainer')
       if (openCaseBtn) {
         openCaseBtn.innerHTML = 'Rolling ...'
-        openCaseBtn.classList.add('disabled')
+        openCaseBtn.classList.add('disabled') // re-enable after ~ 2 secs ???
       }
 
       var lineArrays = ['-2985px', '-2995px', '-3005px', '-3015px', '-3025px', '-3035px', '-3045px', '-3055px', '-3065px', '-3075px', '-3085px', '-3095px', '-3100px']
@@ -169,7 +170,18 @@ export default defineComponent({
       console.log(landLine)
 
       const boxx = document.querySelector('#containerItemDiv')
-      if (boxx) (boxx as HTMLElement).style.left = landLine
+      setTimeout(() => {
+        console.log('dicker pepenis')
+        if (boxx) {
+          (boxx as HTMLElement).style.left = landLine
+          setTimeout(() => {
+            if (openCaseBtn) {
+              openCaseBtn.innerHTML = 'Open ' + containerName
+              openCaseBtn.classList.remove('disabled')
+            }
+          }, 3000)
+        }
+      }, 100)
     }
 
     const getCondition = (float: number): string => {
@@ -202,7 +214,7 @@ export default defineComponent({
   left: 0;
   width: auto;
   height: 100%;
-  transition: left 7s;
+  transition: left 5s ease-in-out;
 }
 
 .animationAreaItems {

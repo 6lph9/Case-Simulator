@@ -1,113 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<head>
+  <title>CS:GO Case Opening Animation</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+  <script>
+  function startRoll(){
+    const openCaseBtn = document.querySelector('#openCase')
+    if (openCaseBtn) {
+      openCaseBtn.innerHTML = 'Rolling ...'
+      openCaseBtn.classList.add('disabled')
+    }
+    var landLine = '-3000px';
 
-    </head>
-<body>
-    <div id="cardList"><!--
-    --><div class="card common">Common</div><!--
-    --><div class="card rare">Rare</div><!--
-    --><div class="card mythical">M</div><!--
-    --><div class="card legendary">L</div><!--
---></div>
-<button onclick="spin" id="spin">Spin</button>
-</body>
+    const boxx = document.querySelector('#reeee')
+    boxx.style.left = landLine
+  }
+  </script>
 <style>
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+body {
+  background: grey;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100% !important;
 }
 
-#cardList {
-  height: 100px;
-  width: 302px;
+.itemBoxAn {
+  border-radius: 0px;
+  border: none;
+  margin: 5px;
+  min-width: 100px;
+  width: 150px;
+  height: 165px;
+  background: cyan;
   position: relative;
-  margin: 10px;
-  border: 1px solid #33e;
+}
+
+.itemBoxAnW {
+  border-radius: 0px;
+  border: none;
+  margin: 5px;
+  min-width: 100px;
+  width: 150px;
+  height: 165px;
+  position: relative;
+  background: black;
+}
+
+.animationAreaItems {
+  width: 100%;
+  min-height: 180px;
+  max-height: 180px;
+  height: 180px !important;
+  position: relative;
+  text-align: center;
+  display: inline-block;
   overflow: hidden;
   white-space: nowrap;
+  border: 2px solid red;
 }
 
-.card {
-  display: inline-block;
-  text-align: center;
-  height: 100px;
-  width: 100px;
-  line-height: 100px;
-  background-color: #99e;
-  font-family: monospace;
-  font-size: 2em;
-  color: #444;
-  border-left: 1px solid #33e;
-  border-right: 1px solid #33e;
-  background-color: brown;
-}
-
-#cardList::before,
-#cardList::after {
-  content: '';
-  display: block;
-  z-index: 100;
-  width: 0px;
-  height: 0px;
-  transform: translateX(-50%);
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-}
-
-#cardList::before {
+.animationAreaItems:before {
+  content: "";
   position: absolute;
-  top: 0px;
-  left: 50%;
-  border-top: 12px solid #33e;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 48%;
+  border-style: solid;
+  border-width: 0 20px 20px 20px;
+  border-color: transparent transparent #ff0000 transparent;
 }
 
-#cardList::after {
+.animationAreaItems:after {
+  content: "";
   position: absolute;
-  bottom: 0px;
-  left: 50%;
-  border-bottom: 12px solid #33e;
-}
-</style>
-<script>
-const cards = document.getElementsByClassName('card')
-const cardContainer = document.getElementById('cardList')
-const speed 		= 1000,
-    width 		= 100, 
-    randomize 	= true, 
-    distance 	= 20 * width 
-;
-
-for (let i = 0; i < 50; i++) {
-    const clonedCard = cards.cloneNode(true)
-    cardContainer.appendChild(clonedCard)
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 48%;
+  border-style: solid;
+  border-width: 20px 20px 0 20px;
+  border-color: #ff0000 transparent transparent transparent;
 }
 
-function spin() {
-    var newMargin = 0, newDistance = distance;
-    if (randomize) {
-        newDistance = Math.floor(Math.random() * cards.length * 5);
-		    newDistance += cards.length * 10;
-        var rand = Math.floor((Math.random()*100)+1);
-        newDistance *= rand;
-    } 
-    newMargin = -(newDistance);
-    /*
-    cards.first().animate({
-        marginLeft: newMargin
-    }, 7500);
-    */
-   const firstCard = cards[0]
-   console.log(firstCard)
-   firstCard.animate({
-              top: ['8px', '280px']
-                 },{ duration: 5000,        // number in ms [this would be equiv of your speed].
-                     easing: 'ease-in-out',
-                     iterations: 1,         // infinity or a number.
-                  // fill: ''
-        });   
+#reeee {
+  position: absolute;
+  left: 0;
+  width: auto;
+  height: 100%;
+  background: blue;
+  transition: 7s;
 }
-</script>
+  </style>
+</head>
+  <body>
+    <button onclick="startRoll()" class="btn btn-info">OPEN</button>
+    <div class="container-fluid caseOpeningArea">
+      <div class="row">
+        <div  class="container animationAreaItems">
+          <div class="row">
+            <div id="reeee" class="row text-center flex-nowrap">
+                <div class="itemBoxAn"> 1111111111111111111111 </div>
+                <div class="itemBoxAn"> 2 </div>
+                <div class="itemBoxAn"> 3 </div>
+                <div class="itemBoxAn"> 4 </div>
+                <div class="itemBoxAn"> 5 </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn itemBoxAnW">    </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+                <div class="itemBoxAn">  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

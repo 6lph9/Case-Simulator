@@ -13,7 +13,7 @@ export default defineComponent({
   props: {
     img: { type: String, required: true },
     name: { type: String, required: true },
-    rarity: { type: String, required: true }
+    rarity: { type: Number, required: true }
   },
   setup (props) {
     console.log('props from item:', props)
@@ -23,26 +23,26 @@ export default defineComponent({
       if (element) {
         console.log('elemt there', props.rarity)
         switch (props.rarity) {
-          case 'Special':
+          case 0:
             element.classList.add('itemRarity0')
             break
-          case 'Covert':
+          case 1:
             element.classList.add('itemRarity1')
             break
-          case 'Classified':
+          case 2:
             element.classList.add('itemRarity2')
             break
-          case 'Restricted':
+          case 3:
             element.classList.add('itemRarity3')
             break
-          case 'Mil-Spec':
+          case 4:
             console.log('MILSPEC ADDED?')
             element.classList.add('itemRarity4')
             break
-          case 'Industrial':
+          case 5:
             element.classList.add('itemRarity5')
             break
-          case 'Consumer':
+          case 6:
             element.classList.add('itemRarity6')
             break
           default:

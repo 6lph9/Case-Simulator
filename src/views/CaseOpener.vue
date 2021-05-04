@@ -1,17 +1,26 @@
 <template>
   <div id="case-opening">
     <div class="container-fluid">
-      <div v-show="data.openingContainer" class="container animationAreaItems mx-2">
+      <div v-show="!openingContainer" class="case_showcase">
+        <div class="case_allitems">
+          <div v-for="(item, index) in containerSkins" :key="index" class="case_item">
+            <img :src="'https://steamcommunity-a.akamaihd.net/economy/image/' + item.icon" :alt="item.name" width="150">
+            <p>{{ item.rarity }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div v-show="openingContainer" class="container animationAreaItems mx-2">
         <div id="containerItemDiv" class="row g-0 text-center flex-nowrap mx-auto">
           <ContainerItem
             v-for="(item, index) in containerItems"
             :key="item.name + index"
-            :img="'https://steamcommunity-a.akamaihd.net/economy/image/' + item['conditions']['Factory New'].icon_url"
+            :img="'https://steamcommunity-a.akamaihd.net/economy/image/' + item.icon"
             :name="item.name"
             :rarity="item.rarity" />
         </div>
       </div>
-      <button class="btn btn-info" id="openContainer" @click="unbox(container.content)">Open {{ container.name }}</button>
+      <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
     </div>
 
     <div>
@@ -29,7 +38,7 @@
 <script lang="ts">
 import { defineComponent, reactive, Ref, ref } from 'vue'
 import ContainerItem from '@/components/containerItem.vue'
-import caseData from '@/testData/cases.json'
+import caseData from '@/testData/containers.json'
 
 export default defineComponent({
   name: 'CaseOpener',
@@ -74,38 +83,57 @@ export default defineComponent({
       else return 4 // 'Mil-Spec'
     }
 
-    const createContainerItems = (containerContent: any[][], amount: number) => {
+    const createContainerItems = (containerContent: any[][], amount: number, unboxed?: Record<string, any>) => {
       const elements = []
 
       for (let i = 0; i < amount; i++) {
-        const rarity = getRarity()
-        const possibleSkins = containerContent[rarity]
-        const skin = possibleSkins[(randomNumber(1, possibleSkins.length) - 1)]
-        elements.push(skin)
+        if (unboxed && i === unboxed.index) {
+          elements.push(unboxed.skin)
+        } else {
+          const rarity = getRarity()
+          const possibleSkins = containerContent[rarity]
+          const skin = possibleSkins[(randomNumber(1, possibleSkins.length) - 1)]
+          skin.rarity = rarity
+          elements.push(skin)
+        }
       }
 
       console.log('full container: ', elements)
       return elements
     }
 
+    const getContainerSkins = (containerContent: any[][]): Record<string, any>[] => {
+      const skins: Record<string, any>[] = []
+      containerContent.forEach((condition: any[], index: number) => {
+        if (index === 0) skins.push(condition)
+        else {
+          condition.forEach(skin => {
+            skins.push(skin)
+          })
+        }
+      })
+      return skins
+    }
+
     const container = getContainer(props.slug)
+    const containerSkins = getContainerSkins(container.content)
 
     const openedSkins: Ref<any[]> = ref([])
     const containerItems: Ref<any[]> = ref([])
+    const openingContainer = ref(false)
 
     containerItems.value = createContainerItems(container.content, 50)
 
     const data = reactive({
-      openingContainer: false,
-
       totalCasesOpened: 0,
       spent: 0,
       profit: 0,
       unboxedSkin: {}
     })
 
-    const unbox = (containerContent: any[][]) => {
-      data.openingContainer = true
+    const unbox = () => {
+      const containerContent = container.content
+      openingContainer.value = true
 
       const rarity = getRarity()
 
@@ -120,26 +148,26 @@ export default defineComponent({
 
       let special
       let price
-      let icon_url
+      let icon_id
 
       if (statTrak) {
         special = 'StatTrak™'
-        price = skin.conditions.StatTrack[condition].sell_price
-        icon_url = skin.conditions.StatTrack[condition].icon_url
+        price = skin.conditions[condition].stattrak_price
+        icon_id = skin.icon
       } else {
         price = skin.conditions[condition].sell_price
-        icon_url = skin.conditions[condition].icon_url
+        icon_id = skin.icon
       }
 
       const unboxedSkin = {
         name: skin.name,
         rarity: skin.rarity,
-        case: props.slug, // TODO
+        case: container.name,
         float: float,
         condition: condition,
         price,
-        icon_url,
-        full_icon_url: `https://steamcommunity-a.akamaihd.net/economy/image/${icon_url}`,
+        icon_id,
+        full_icon_url: `https://steamcommunity-a.akamaihd.net/economy/image/${icon_id}`,
         special
       }
       console.log(unboxedSkin)
@@ -147,7 +175,7 @@ export default defineComponent({
         console.warn(unboxedSkin)
       }
 
-      containerItems.value = createContainerItems(containerContent, 50)
+      containerItems.value = createContainerItems(containerContent, 50, { skin: unboxedSkin, index: 40 })
 
       startRoll(container.name)
 
@@ -203,7 +231,7 @@ export default defineComponent({
       return Math.random() * (maxFloat - minFloat) + minFloat
     }
 
-    return { data, unbox, container, openedSkins, containerItems }
+    return { data, unbox, container, openedSkins, containerItems, containerSkins, openingContainer }
   }
 })
 </script>
@@ -246,5 +274,35 @@ export default defineComponent({
   border-style: solid;
   border-width: 20px 20px 0 20px;
   border-color: #ff0000 transparent transparent transparent;
+}
+
+.case_allitems {
+  width: 100%;
+  max-height: 100%;
+  flex-wrap: wrap;
+  margin: auto;
+  margin: 0 4px 0 2px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.case_showcase {
+  background-color: #ff0000;
+  height: 450px;
+  position: relative;
+  transition: 0.2s;
+  display: flex;
+  width: 100%;
+}
+
+.case_item {
+  width: 150px;
+  height: 150px;
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 1rem;
+  -webkit-filter: drop-shadow(0px 0px 2px #000a);
+  filter: drop-shadow(0px 0px 2px #000a);
+  position: relative;
 }
 </style>

@@ -29,46 +29,41 @@
           "rarity": "Covert",
           "min": 0,
           "max": 0.8,
+          "imgs": [
+            "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
+            "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
+            "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w"
+          ],
           "conditions": {
             "Factory New": {
-              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
               "sell_price": 12090
             },
             "Minimal Wear": {
-              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
               "sell_price": 12090
             },
             "Field-Tested": {
-              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
               "sell_price": 12090
             },
             "Well-Worn": {
-              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
               "sell_price": 12090
             },
             "Battle-Scarred": {
-              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
               "sell_price": 12090
             },
             "StatTrack": {
               "Factory New": {
-                "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
                 "sell_price": 12090
               },
               "Minimal Wear": {
-                "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
                 "sell_price": 12090
               },
               "Field-Tested": {
-                "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
                 "sell_price": 12090
               },
               "Well-Worn": {
-                "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
                 "sell_price": 12090
               },
               "Battle-Scarred": {
-                "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposbaqKAxf0Ob3djFN79fnzL-cluX5MrLVk2Vu5Mx2gv2P8dWsiQKyrxFoMGj3Io_BcwA6YFDSq1a6lLq91J7o6Z3MzHVhvHFz4GGdwUK867nN7w",
                 "sell_price": 12090
               }
             }

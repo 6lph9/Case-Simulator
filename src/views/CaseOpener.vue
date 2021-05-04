@@ -14,7 +14,7 @@
         <div id="containerItemDiv" class="row g-0 text-center flex-nowrap mx-auto">
           <ContainerItem
             v-for="(item, index) in containerItems"
-            :key="item.name + index"
+            :key="index"
             :img="'https://steamcommunity-a.akamaihd.net/economy/image/' + item.icon"
             :name="item.name"
             :rarity="item.rarity" />
@@ -93,7 +93,9 @@ export default defineComponent({
           const rarity = getRarity()
           const possibleSkins = containerContent[rarity]
           const skin = possibleSkins[(randomNumber(1, possibleSkins.length) - 1)]
-          skin.rarity = rarity
+          if (rarity !== 0) {
+            skin.rarity = rarity
+          }
           elements.push(skin)
         }
       }
@@ -135,6 +137,13 @@ export default defineComponent({
       const containerContent = container.content
       openingContainer.value = true
 
+      const boxx = document.querySelector('#containerItemDiv')
+      if (boxx) {
+        boxx.classList.add('notransition');
+        (boxx as HTMLElement).style.left = '0'
+        boxx.classList.remove('notransition')
+      }
+
       const rarity = getRarity()
 
       const possibleSkins = containerContent[rarity]
@@ -166,7 +175,7 @@ export default defineComponent({
         float: float,
         condition: condition,
         price,
-        icon_id,
+        icon: icon_id,
         full_icon_url: `https://steamcommunity-a.akamaihd.net/economy/image/${icon_id}`,
         special
       }
@@ -175,7 +184,7 @@ export default defineComponent({
         console.warn(unboxedSkin)
       }
 
-      containerItems.value = createContainerItems(containerContent, 50, { skin: unboxedSkin, index: 40 })
+      containerItems.value = createContainerItems(containerContent, 50, { skin: unboxedSkin, index: 45 })
 
       startRoll(container.name)
 
@@ -192,7 +201,7 @@ export default defineComponent({
         openCaseBtn.classList.add('disabled') // re-enable after ~ 2 secs ???
       }
 
-      var lineArrays = ['-2985px', '-2995px', '-3005px', '-3015px', '-3025px', '-3035px', '-3045px', '-3055px', '-3065px', '-3075px', '-3085px', '-3095px', '-3100px']
+      var lineArrays = ['-7030px', '-7040px', '-7050px', '-7060px', '-7070px', '-7080px', '-7090px', '-7100px', '-7110px', '-7120px', '-7130px', '-7140px', '-7150px', '-7160px', '-7170px', '-7180px']
 
       var landLine = lineArrays[Math.floor(Math.random() * lineArrays.length)]
       console.log(landLine)
@@ -201,15 +210,16 @@ export default defineComponent({
       setTimeout(() => {
         console.log('dicker pepenis')
         if (boxx) {
+          boxx.classList.remove('notransition');
           (boxx as HTMLElement).style.left = landLine
           setTimeout(() => {
             if (openCaseBtn) {
               openCaseBtn.innerHTML = 'Open ' + containerName
               openCaseBtn.classList.remove('disabled')
             }
-          }, 3000)
+          }, 5000)
         }
-      }, 100)
+      }, 50)
     }
 
     const getCondition = (float: number): string => {
@@ -243,6 +253,13 @@ export default defineComponent({
   width: auto;
   height: 100%;
   transition: left 5s ease-in-out;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
 }
 
 .animationAreaItems {

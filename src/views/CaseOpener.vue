@@ -140,7 +140,11 @@ export default defineComponent({
       const boxx = document.querySelector('#containerItemDiv')
       if (boxx) {
         boxx.classList.add('notransition');
-        (boxx as HTMLElement).style.left = '0'
+        // eslint-disable-next-line no-unused-expressions
+        (boxx as HTMLElement).offsetHeight;
+        (boxx as HTMLElement).style.left = '0';
+        // eslint-disable-next-line no-unused-expressions
+        (boxx as HTMLElement).offsetHeight
         boxx.classList.remove('notransition')
       }
 
@@ -255,7 +259,7 @@ export default defineComponent({
   transition: left 5s ease-in-out;
 }
 
-.notransition {
+.notransition * {
   -webkit-transition: none !important;
   -moz-transition: none !important;
   -o-transition: none !important;

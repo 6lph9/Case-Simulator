@@ -256,14 +256,6 @@ export default defineComponent({
   left: 0;
   width: auto;
   height: 100%;
-  transition: left 5s ease-in-out;
-}
-
-.notransition * {
-  -webkit-transition: none !important;
-  -moz-transition: none !important;
-  -o-transition: none !important;
-  transition: none !important;
 }
 
 .animationAreaItems {

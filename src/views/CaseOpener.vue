@@ -1,7 +1,7 @@
 <template>
   <div id="case-opening">
     <div class="container-fluid">
-      <div v-show="!openingContainer" class="case_showcase">
+      <div v-show="contentShowcase" class="case_showcase">
         <div class="case_allitems">
           <div v-for="(item, index) in containerSkins" :key="index" class="case_item">
             <img :src="'https://steamcommunity-a.akamaihd.net/economy/image/' + item.icon" :alt="item.name" width="150">
@@ -10,20 +10,22 @@
         </div>
       </div>
 
-      <div v-show="openingContainer" class="container animationAreaItems mx-2">
-        <div id="containerItemDiv" class="row g-0 text-center flex-nowrap mx-auto">
-          <ContainerItem
-            v-for="(item, index) in containerItems"
-            :key="index"
-            :img="'https://steamcommunity-a.akamaihd.net/economy/image/' + item.icon"
-            :name="item.name"
-            :rarity="item.rarity" />
+      <div id="case_spin" class="case_spin bg-danger" style="visibility: visible; position: relative; animation: 0.33s ease 0s 1 normal none running scaleYrestore;">
+        <div class="case_preitemslinear bg-secondary">
+          <div id="items" style="margin-left: 500px; transition: all 6s cubic-bezier(0, 0.11, 0.33, 1) 0s;">
+            <ContainerItem
+              v-for="(item, index) in containerItems"
+              :key="index"
+              :img="'https://steamcommunity-a.akamaihd.net/economy/image/' + item.icon"
+              :name="item.name"
+              :rarity="item.rarity" />
+          </div>
         </div>
+        <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
       </div>
-      <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
     </div>
 
-    <div>
+    <div id="skin_winner" v-show="openedSkinPopup">
       <img :src="data.unboxedSkin.full_icon_url" :alt="data.unboxedSkin.name">
       <h1>{{ data.unboxedSkin.special }} {{ data.unboxedSkin.name }}</h1>
       <h2>{{ data.unboxedSkin.rarity }}</h2>
@@ -123,6 +125,8 @@ export default defineComponent({
     const openedSkins: Ref<any[]> = ref([])
     const containerItems: Ref<any[]> = ref([])
     const openingContainer = ref(false)
+    const openedSkinPopup = ref(false)
+    const contentShowcase = ref(true)
 
     containerItems.value = createContainerItems(container.content, 50)
 
@@ -135,18 +139,8 @@ export default defineComponent({
 
     const unbox = () => {
       const containerContent = container.content
+      contentShowcase.value = false
       openingContainer.value = true
-
-      const boxx = document.querySelector('#containerItemDiv')
-      if (boxx) {
-        boxx.classList.add('notransition');
-        // eslint-disable-next-line no-unused-expressions
-        (boxx as HTMLElement).offsetHeight;
-        (boxx as HTMLElement).style.left = '0';
-        // eslint-disable-next-line no-unused-expressions
-        (boxx as HTMLElement).offsetHeight
-        boxx.classList.remove('notransition')
-      }
 
       const rarity = getRarity()
 
@@ -202,28 +196,39 @@ export default defineComponent({
       const openCaseBtn = document.querySelector('#openContainer')
       if (openCaseBtn) {
         openCaseBtn.innerHTML = 'Rolling ...'
-        openCaseBtn.classList.add('disabled') // re-enable after ~ 2 secs ???
+        openCaseBtn.classList.add('disabled')
       }
 
       var lineArrays = ['-7030px', '-7040px', '-7050px', '-7060px', '-7070px', '-7080px', '-7090px', '-7100px', '-7110px', '-7120px', '-7130px', '-7140px', '-7150px', '-7160px', '-7170px', '-7180px']
-
       var landLine = lineArrays[Math.floor(Math.random() * lineArrays.length)]
       console.log(landLine)
 
-      const boxx = document.querySelector('#containerItemDiv')
-      setTimeout(() => {
-        console.log('dicker pepenis')
-        if (boxx) {
-          boxx.classList.remove('notransition');
-          (boxx as HTMLElement).style.left = landLine
-          setTimeout(() => {
-            if (openCaseBtn) {
-              openCaseBtn.innerHTML = 'Open ' + containerName
-              openCaseBtn.classList.remove('disabled')
-            }
-          }, 5000)
-        }
-      }, 50)
+      const boxV2 = document.querySelector('#items')
+      if (boxV2) {
+        (boxV2 as HTMLElement).style.transition = '6s';
+        (boxV2 as HTMLElement).style.transitionTimingFunction = 'cubic-bezier(0,0.11,0.33,1)';
+        (boxV2 as HTMLElement).style.marginLeft = landLine
+
+        setTimeout(() => {
+          if (openCaseBtn) {
+            openCaseBtn.innerHTML = 'Open ' + containerName
+            openCaseBtn.classList.remove('disabled')
+            resetToZero(boxV2 as HTMLElement)
+          }
+          displaySkin()
+        }, 7000)
+      }
+    }
+
+    const resetToZero = (box: HTMLElement) => {
+      box.style.transition = '0s'
+      box.style.marginLeft = '25px'
+    }
+
+    const displaySkin = () => {
+      console.log('we are displaying opnened skin')
+      openingContainer.value = false
+      openedSkinPopup.value = true
     }
 
     const getCondition = (float: number): string => {
@@ -245,17 +250,93 @@ export default defineComponent({
       return Math.random() * (maxFloat - minFloat) + minFloat
     }
 
-    return { data, unbox, container, openedSkins, containerItems, containerSkins, openingContainer }
+    return { data, unbox, container, openedSkins, containerItems, containerSkins, openingContainer, openedSkinPopup, contentShowcase }
   }
 })
 </script>
 
 <style scoped>
 #containerItemDiv {
-  position: absolute;
-  left: 0;
-  width: auto;
+  position: relative;
+  width: 100%;
   height: 100%;
+}
+
+.case_item_level2{
+  background: rgb(75, 105, 255);
+  background: radial-gradient(circle farthest-side,rgb(75, 105, 255),rgb(55, 85, 235));
+  box-shadow: 0px 0px 70px 32px hsla(235, 50%, 30%, 1);
+}
+
+.case_item_level_gradientcut{
+  margin-top: -5px;
+  height: 5px;
+  -webkit-clip-path: polygon(0% -100px, 100% -100px, 100% 100%, 0% 100%);
+  clip-path: polygon(0% -100px, 100% -100px, 100% 100%, 0% 100%);
+}
+
+.case_item_desc{
+  width: 100%;
+  height: 25%;
+}
+
+.case_item_bg{
+  overflow: hidden;
+  box-shadow: inset 0px 0px 2px #444;
+  width: 100%;
+  height: 75%;
+  background: linear-gradient(#555,#888,#aaa,#bbb);
+  opacity: 0.75;
+}
+
+.case_item_img_div{
+  position:absolute;
+  width: 100%;
+  height: 75%;
+  overflow: hidden;
+}
+
+.case_items{
+  margin-top: 25%;
+  -webkit-filter: brightness(75%) blur(2px);
+  filter: brightness(75%) blur(2px);
+}
+
+.case_item_img{
+  max-width: 100%;
+  width: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.case_spin{
+  position: relative;
+  width: 75%;
+  height: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  margin:auto;
+  z-index: 5;
+}
+
+.case_preitemscircle{
+  z-index:2;
+  position: relative;
+  height: 110px;
+  -webkit-mask-image: radial-gradient(circle closest-side, #fff0 165px,#000 166px);
+}
+
+.case_preitemslinear{
+  -webkit-mask-image: linear-gradient(to left,#fff0 0%,#000 10%,#000 90%,#fff0 100%);
+}
+
+.case_item_noshadow,.case_item_noshadow:hover{
+  -webkit-filter: none;
+  filter: none;
 }
 
 .animationAreaItems {

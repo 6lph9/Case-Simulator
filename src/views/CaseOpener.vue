@@ -1,37 +1,47 @@
 <template>
   <div id="case-opening">
-    <div class="container-fluid">
+    <div class="d-flex flex-column justify-content-center align-items-center">
       <div v-show="contentShowcase" class="case_showcase">
-        <div class="case_allitems">
-          <div v-for="(item, index) in containerSkins" :key="index" class="case_item">
-            <img :src="'https://steamcommunity-a.akamaihd.net/economy/image/' + item.icon" :alt="item.name" width="150">
-            <p>{{ item.rarity }}</p>
-          </div>
+        <div class="mt-2">
+          <ContainerContent
+            v-for="(item, index) in allDifferentItemsInThisContainer"
+            :key="index"
+            :img="item.icon"
+            :name="item.name"
+            :rarity="item.rarity" />
         </div>
       </div>
+      <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
+    </div>
 
-      <div id="case_spin" class="case_spin bg-danger" style="visibility: visible; position: relative; animation: 0.33s ease 0s 1 normal none running scaleYrestore;">
-        <div class="case_preitemslinear bg-secondary">
-          <div id="items" style="margin-left: 500px; transition: all 6s cubic-bezier(0, 0.11, 0.33, 1) 0s;">
-            <ContainerItem
-              v-for="(item, index) in containerItems"
-              :key="index"
-              :img="'https://steamcommunity-a.akamaihd.net/economy/image/' + item.icon"
-              :name="item.name"
-              :rarity="item.rarity" />
-          </div>
+    <div v-show="openingContainer" id="case_spin" class="case_spin bg-danger">
+      <div class="case_preitemslinear bg-secondary">
+        <div id="items" style="margin-left: 50px; transition: all 6s cubic-bezier(0, 0.11, 0.33, 1) 0s;">
+          <ContainerItem
+            v-for="(item, index) in containerItems"
+            :key="index"
+            :img="item.icon"
+            :name="item.name"
+            :rarity="item.rarity" />
         </div>
-        <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
       </div>
     </div>
 
-    <div id="skin_winner" v-show="openedSkinPopup">
-      <img :src="data.unboxedSkin.full_icon_url" :alt="data.unboxedSkin.name">
+    <div id="skin_winner" v-show="skinWinner">
+      <img :src="data.unboxedSkin.icon" :alt="data.unboxedSkin.name">
       <h1>{{ data.unboxedSkin.special }} {{ data.unboxedSkin.name }}</h1>
       <h2>{{ data.unboxedSkin.rarity }}</h2>
       <h2>{{ data.unboxedSkin.float }} | {{ data.unboxedSkin.condition }}</h2>
       <h3>{{ data.unboxedSkin.case }}</h3>
-      <h3>{{ data.totalCasesOpened }}</h3>
+    </div>
+
+    <div>
+      overall stats
+      <p>Opened Cases: {{ data.totalCasesOpened }}</p>
+      <p>spent: {{ data.spent }} €</p>
+      <p>earned: {{ data.earned }} €</p>
+      <p>profit: {{ data.earned - data.spent }} €</p>
+      <p>profit: {{ (data.earned / 100) * data.spent }} %</p>
     </div>
 
   </div>
@@ -40,6 +50,7 @@
 <script lang="ts">
 import { defineComponent, reactive, Ref, ref } from 'vue'
 import ContainerItem from '@/components/containerItem.vue'
+import ContainerContent from '@/components/containerContent.vue'
 import caseData from '@/testData/containers.json'
 
 export default defineComponent({
@@ -51,7 +62,8 @@ export default defineComponent({
     }
   },
   components: {
-    ContainerItem
+    ContainerItem,
+    ContainerContent
   },
 
   setup (props) {
@@ -95,9 +107,7 @@ export default defineComponent({
           const rarity = getRarity()
           const possibleSkins = containerContent[rarity]
           const skin = possibleSkins[(randomNumber(1, possibleSkins.length) - 1)]
-          if (rarity !== 0) {
-            skin.rarity = rarity
-          }
+          skin.rarity = rarity
           elements.push(skin)
         }
       }
@@ -106,34 +116,40 @@ export default defineComponent({
       return elements
     }
 
-    const getContainerSkins = (containerContent: any[][]): Record<string, any>[] => {
-      const skins: Record<string, any>[] = []
+    const getAllDifferentContainerItems = (containerContent: any[][]): Record<string, any>[] => {
+      const lllll: Record<string, any>[] = []
       containerContent.forEach((condition: any[], index: number) => {
-        if (index === 0) skins.push(condition)
-        else {
+        if (index === 0) {
+          const specialItem = {
+            name: '★ Rare Special Item ★',
+            icon: 'https://vignette4.wikia.nocookie.net/cswikia/images/a/ad/Csgo-default_rare_item.png/revision/latest?cb=20150227163025',
+            rarity: 0
+          }
+          lllll.push(specialItem)
+        } else {
           condition.forEach(skin => {
-            skins.push(skin)
+            skin.rarity = index
+            skin.icon = 'https://steamcommunity-a.akamaihd.net/economy/image/' + skin.icon
+            lllll.push(skin)
           })
         }
       })
-      return skins
+      return lllll
     }
 
     const container = getContainer(props.slug)
-    const containerSkins = getContainerSkins(container.content)
+    const allDifferentItemsInThisContainer = getAllDifferentContainerItems(container.content).reverse()
 
     const openedSkins: Ref<any[]> = ref([])
     const containerItems: Ref<any[]> = ref([])
     const openingContainer = ref(false)
-    const openedSkinPopup = ref(false)
+    const skinWinner = ref(false)
     const contentShowcase = ref(true)
-
-    containerItems.value = createContainerItems(container.content, 50)
 
     const data = reactive({
       totalCasesOpened: 0,
       spent: 0,
-      profit: 0,
+      earned: 0,
       unboxedSkin: {}
     })
 
@@ -162,13 +178,13 @@ export default defineComponent({
         price = skin.conditions[condition].stattrak_price
         icon_id = skin.icon
       } else {
-        price = skin.conditions[condition].sell_price
+        price = skin.conditions[condition].price
         icon_id = skin.icon
       }
 
       const unboxedSkin = {
         name: skin.name,
-        rarity: skin.rarity,
+        rarity: rarity,
         case: container.name,
         float: float,
         condition: condition,
@@ -178,9 +194,6 @@ export default defineComponent({
         special
       }
       console.log(unboxedSkin)
-      if (unboxedSkin.rarity === 'Covert' || !unboxedSkin.rarity) {
-        console.warn(unboxedSkin)
-      }
 
       containerItems.value = createContainerItems(containerContent, 50, { skin: unboxedSkin, index: 45 })
 
@@ -189,6 +202,8 @@ export default defineComponent({
       openedSkins.value.push(unboxedSkin)
       data.unboxedSkin = unboxedSkin
       data.totalCasesOpened++
+      data.spent += (2.2 + parseFloat(container.price.split('$')[1]))
+      data.earned += unboxedSkin.price
       return { unboxedSkin }
     }
 
@@ -228,7 +243,7 @@ export default defineComponent({
     const displaySkin = () => {
       console.log('we are displaying opnened skin')
       openingContainer.value = false
-      openedSkinPopup.value = true
+      skinWinner.value = true
     }
 
     const getCondition = (float: number): string => {
@@ -250,69 +265,12 @@ export default defineComponent({
       return Math.random() * (maxFloat - minFloat) + minFloat
     }
 
-    return { data, unbox, container, openedSkins, containerItems, containerSkins, openingContainer, openedSkinPopup, contentShowcase }
+    return { data, unbox, container, openedSkins, containerItems, allDifferentItemsInThisContainer, openingContainer, skinWinner, contentShowcase }
   }
 })
 </script>
 
 <style scoped>
-#containerItemDiv {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.case_item_level2{
-  background: rgb(75, 105, 255);
-  background: radial-gradient(circle farthest-side,rgb(75, 105, 255),rgb(55, 85, 235));
-  box-shadow: 0px 0px 70px 32px hsla(235, 50%, 30%, 1);
-}
-
-.case_item_level_gradientcut{
-  margin-top: -5px;
-  height: 5px;
-  -webkit-clip-path: polygon(0% -100px, 100% -100px, 100% 100%, 0% 100%);
-  clip-path: polygon(0% -100px, 100% -100px, 100% 100%, 0% 100%);
-}
-
-.case_item_desc{
-  width: 100%;
-  height: 25%;
-}
-
-.case_item_bg{
-  overflow: hidden;
-  box-shadow: inset 0px 0px 2px #444;
-  width: 100%;
-  height: 75%;
-  background: linear-gradient(#555,#888,#aaa,#bbb);
-  opacity: 0.75;
-}
-
-.case_item_img_div{
-  position:absolute;
-  width: 100%;
-  height: 75%;
-  overflow: hidden;
-}
-
-.case_items{
-  margin-top: 25%;
-  -webkit-filter: brightness(75%) blur(2px);
-  filter: brightness(75%) blur(2px);
-}
-
-.case_item_img{
-  max-width: 100%;
-  width: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-}
-
 .case_spin{
   position: relative;
   width: 75%;
@@ -332,11 +290,6 @@ export default defineComponent({
 
 .case_preitemslinear{
   -webkit-mask-image: linear-gradient(to left,#fff0 0%,#000 10%,#000 90%,#fff0 100%);
-}
-
-.case_item_noshadow,.case_item_noshadow:hover{
-  -webkit-filter: none;
-  filter: none;
 }
 
 .animationAreaItems {
@@ -370,33 +323,15 @@ export default defineComponent({
   border-color: #ff0000 transparent transparent transparent;
 }
 
-.case_allitems {
-  width: 100%;
-  max-height: 100%;
-  flex-wrap: wrap;
-  margin: auto;
-  margin: 0 4px 0 2px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
-
 .case_showcase {
-  background-color: #ff0000;
-  height: 450px;
+  height: 100%;
   position: relative;
   transition: 0.2s;
   display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-}
-
-.case_item {
-  width: 150px;
-  height: 150px;
-  display: inline-block;
-  vertical-align: top;
-  margin-left: 1rem;
-  -webkit-filter: drop-shadow(0px 0px 2px #000a);
-  filter: drop-shadow(0px 0px 2px #000a);
-  position: relative;
+  max-width: 75rem;
+  background-image: url(https://cdn.discordapp.com/attachments/719496602053640203/744902293614493726/Backgroundblack.png);
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="containerItem">
     <img :src="img" :alt="name" class="containerItemImg">
     <div id="itemBG" class="containerItemBg" />
-    <div class="itemDescription containerItemlevel_gradientcut itemRarity4" />
+    <div id="itemDescription" class="itemDescription containerItemlevel_gradientcut" :class="[rarity ? 'itemRarity' + rarity : '']" />
   </div>
 </template>
 <script lang="ts">
@@ -16,43 +16,7 @@ export default defineComponent({
     rarity: { type: Number, required: true }
   },
   setup (props) {
-    console.log('props from item:', props)
-
-    const addRarityBackground = () => {
-      const element = document.querySelector('#itemBG')
-      if (element) {
-        console.log('elemt there', props.rarity)
-        switch (props.rarity) {
-          case 0:
-            element.classList.add('itemRarity0')
-            break
-          case 1:
-            element.classList.add('itemRarity1')
-            break
-          case 2:
-            element.classList.add('itemRarity2')
-            break
-          case 3:
-            element.classList.add('itemRarity3')
-            break
-          case 4:
-            console.log('MILSPEC ADDED?')
-            element.classList.add('itemRarity4')
-            break
-          case 5:
-            element.classList.add('itemRarity5')
-            break
-          case 6:
-            element.classList.add('itemRarity6')
-            break
-          default:
-            throw new Error('FUCK')
-        }
-      }
-    }
-
-    addRarityBackground()
-
+    console.log('props from item:', props.rarity)
     return { }
   }
 })

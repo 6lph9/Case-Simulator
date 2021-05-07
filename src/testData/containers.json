@@ -4,7 +4,21 @@
     "price": "$0.05",
     "icon_id": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU1nfbOIj8W7oWzkYLdlPOsMOmIk2kGscAj2erE99Sn2AGw_0M4NW2hIYOLMlhpcmY0CRM",
     "content": [
-      [" Exceedingly Rare Special Item!"],
+      [
+        {
+          "name": "★ Butterfly Knife",
+          "icon": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQh5hlcX0nvUOGsx8DdQBJjIAVHubSaIAlp1fb3cyhW-NmkkoyS2aCtZ-qFwW4JvMQlj7CVp9qn2Aaw_0ZtZ2z6JYbGIFQ-YV_X81btlOvxxcjrQyWGkSc",
+          "min": 0,
+          "max": 1,
+          "conditions": {
+            "Factory New": { "price": 65.82, "stattrak_price": 304.12 },
+            "Minimal Wear": { "price": 29.61, "stattrak_price": 69.82 },
+            "Field-Tested": { "price": 13.99, "stattrak_price": 30.58 },
+            "Well-Worn": { "price": 15.85, "stattrak_price": 42.05 },
+            "Battle-Scarred": { "price": 8.56, "stattrak_price": 19.53 }
+          }
+        }
+      ],
       [
         {
           "name": "M4A1-S | Player Two",

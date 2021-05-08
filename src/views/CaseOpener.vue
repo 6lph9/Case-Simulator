@@ -40,7 +40,7 @@
       </div>
     </div>
     <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
-    <div>
+    <div id="stats">
       overall stats
       <p>Opened Cases: {{ data.totalCasesOpened }}</p>
       <p>spent: {{ data.spent }} €</p>
@@ -49,6 +49,9 @@
       <p v-if="data.earned > 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
       <p v-else>profit: 0 %</p>
       <div v-for="(skin, index) in openedSkins" :key="index">{{ skin.name }}</div>
+    </div>
+    <div id="settings">
+      <h4>Spin time: {{ data.spinTime }}</h4>
     </div>
 
   </div>
@@ -159,7 +162,8 @@ export default defineComponent({
       earned: 0,
       unboxedSkin: {},
 
-      floatDecimal: 6
+      floatDecimal: 6,
+      spinTime: 7000
     })
 
     const updateFloatLength = () => {
@@ -218,13 +222,14 @@ export default defineComponent({
 
       startRoll(container.name)
 
-      openedSkins.value.push(unboxedSkin)
-
       data.unboxedSkin = unboxedSkin
-      data.totalCasesOpened++
 
-      data.spent += Number((2.2 + parseFloat(container.price.split('$')[1])).toFixed(2))
-      data.earned += Number(unboxedSkin.price.toFixed(2))
+      setTimeout(() => {
+        data.totalCasesOpened++
+        openedSkins.value.push(unboxedSkin)
+        data.spent += Number((2.2 + parseFloat(container.price.split('$')[1])).toFixed(2))
+        data.earned += Number(unboxedSkin.price.toFixed(2))
+      }, data.spinTime)
       return { unboxedSkin }
     }
 
@@ -251,12 +256,12 @@ export default defineComponent({
             resetToZero(boxV2 as HTMLElement)
           }
           displaySkin()
-        }, 7000)
+        }, data.spinTime)
       }
     }
 
     const setTransition = (element: HTMLElement) => {
-      element.style.transition = '6s'
+      element.style.transition = data.spinTime - 1000 + 'ms'
       element.style.transitionTimingFunction = 'cubic-bezier(0,0.11,0.33,1)'
     }
 

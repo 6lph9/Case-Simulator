@@ -39,33 +39,43 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.case_item{
+.containerContent {
   width: 150px;
-  height: 147px;
+  height: 150px;
   display: inline-block;
-  vertical-align:top;
-  margin-left: 10px;
+  vertical-align: center;
+  position: relative;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.case_item {
+  width: 150px;
+  height: 150px;
+
+  display: inline-block;
+  vertical-align: top;
+
   -webkit-filter: drop-shadow(0px 0px 2px #000a);
   filter: drop-shadow(0px 0px 2px #000a);
-  position:  relative;
 }
 
 .case_itemlist {
+  height: 150px;
+  max-width: 150px;
+
   margin-left: 6px;
+  padding: 0px;
   opacity: 0;
   top: 0px;
   transition: 0.2s;
-  cursor: pointer;
-  height: 150px;
   flex: 1;
-  max-width: 150px;
-  padding: 0px;
   border: 8px solid transparent;
   box-sizing: border-box;
 }
 
 .case_item_img_div {
-  position:absolute;
+  position: absolute;
   width: 100%;
   height: 75%;
   overflow: hidden;
@@ -117,7 +127,6 @@ export default defineComponent({
   overflow: hidden;
   font-weight: 600;
   white-space: nowrap;
-  text-overflow: ellipsis;
 }
 
 .case_item_desc_line2 {
@@ -128,16 +137,6 @@ export default defineComponent({
   font-size: 12px;
   overflow: hidden;
   white-space: nowrap;
-}
-
-.containerContent {
-  width: 150px;
-  height: 150px;
-  display: inline-block;
-  vertical-align: center;
-  position: relative;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
 }
 
 .itemRarity6 {

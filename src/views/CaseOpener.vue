@@ -1,7 +1,8 @@
 <template>
   <div id="case-opening">
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <div v-show="contentShowcase" class="case_showcase">
+    <div class="d-flex flex-column justify-content-center align-items-center position-relative bg-warning test">
+      <div v-show="contentShowcase" class="case_showcase position-relative bg-primary">
+        <div class="showcase-bg" />
         <div class="mt-2">
           <ContainerContent
             v-for="(item, index) in allDifferentItemsInThisContainer"
@@ -11,37 +12,45 @@
             :rarity="item.rarity" />
         </div>
       </div>
-      <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
-    </div>
 
-    <div v-show="openingContainer" id="case_spin" class="case_spin bg-danger">
-      <div class="case_preitemslinear bg-secondary">
-        <div id="items" style="margin-left: 50px; transition: all 6s cubic-bezier(0, 0.11, 0.33, 1) 0s;">
-          <ContainerItem
-            v-for="(item, index) in containerItems"
-            :key="index"
-            :img="item.icon"
-            :name="item.name"
-            :rarity="item.rarity" />
+      <div id="case_spin" class="case_spin bg-danger" v-show="openingContainer">
+        <div class="case_preitemslinear bg-secondary">
+          <div id="items" style="margin-left: 50px; transition: all 6s cubic-bezier(0, 0.11, 0.33, 1) 0s;">
+            <ContainerItem
+              v-for="(item, index) in containerItems"
+              :key="index"
+              :img="item.icon"
+              :name="item.name"
+              :rarity="item.rarity" />
+          </div>
+          <div class="case_items_middle"></div>
         </div>
       </div>
-    </div>
 
-    <div id="skin_winner" v-show="skinWinner">
-      <img :src="data.unboxedSkin.icon" :alt="data.unboxedSkin.name">
-      <h1>{{ data.unboxedSkin.special }} {{ data.unboxedSkin.name }}</h1>
-      <h2>{{ data.unboxedSkin.rarity }}</h2>
-      <h2>{{ data.unboxedSkin.float }} | {{ data.unboxedSkin.condition }}</h2>
-      <h3>{{ data.unboxedSkin.case }}</h3>
+      <div id="skin_winner" class="unboxed_skin bg-secondary" v-show="skinWinner">
+        <div class="test02">
+          <h3>{{ data.unboxedSkin.special }} {{ data.unboxedSkin.name }}</h3>
+          <h4>{{ data.unboxedSkin.condition }}</h4>
+          <div style="height: 6px;" :class="[data.unboxedSkin.rarity ? 'itemRarity' + data.unboxedSkin.rarity : '']" />
+        </div>
+
+        <img :src="data.unboxedSkin.icon" :alt="data.unboxedSkin.name" class="case_item_img">
+        <h4 v-if="data.unboxedSkin.float" @click="updateFloatLength()" style="cursor: pointer">Float: {{ data.unboxedSkin.float.toFixed(data.floatDecimal) }}</h4>
+        <h4>{{ data.unboxedSkin.price }} €</h4>
+      </div>
+
+      <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
     </div>
 
     <div>
       overall stats
       <p>Opened Cases: {{ data.totalCasesOpened }}</p>
       <p>spent: {{ data.spent }} €</p>
-      <p>earned: {{ data.earned }} €</p>
-      <p>profit: {{ data.earned - data.spent }} €</p>
-      <p>profit: {{ (data.earned / 100) * data.spent }} %</p>
+      <p>earned: {{ data.earned.toFixed(2) }} €</p>
+      <p>profit: {{ (data.earned - data.spent).toFixed(2) }} €</p>
+      <p v-if="data.earned > 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
+      <p v-else>profit: 0 %</p>
+      <div v-for="(skin, index) in openedSkins" :key="index">{{ skin.name }}</div>
     </div>
 
   </div>
@@ -150,14 +159,17 @@ export default defineComponent({
       totalCasesOpened: 0,
       spent: 0,
       earned: 0,
-      unboxedSkin: {}
+      unboxedSkin: {},
+
+      floatDecimal: 6
     })
 
-    const unbox = () => {
-      const containerContent = container.content
-      contentShowcase.value = false
-      openingContainer.value = true
+    const updateFloatLength = () => {
+      if (data.floatDecimal < 12) data.floatDecimal = 16
+      else data.floatDecimal = 6
+    }
 
+    const chooseItem = (containerContent: any[][]) => {
       const rarity = getRarity()
 
       const possibleSkins = containerContent[rarity]
@@ -182,7 +194,7 @@ export default defineComponent({
         icon_id = skin.icon
       }
 
-      const unboxedSkin = {
+      return {
         name: skin.name,
         rarity: rarity,
         case: container.name,
@@ -193,6 +205,14 @@ export default defineComponent({
         full_icon_url: `https://steamcommunity-a.akamaihd.net/economy/image/${icon_id}`,
         special
       }
+    }
+
+    const unbox = () => {
+      const containerContent = container.content
+      contentShowcase.value = false
+      openingContainer.value = true
+
+      const unboxedSkin = chooseItem(containerContent)
       console.log(unboxedSkin)
 
       containerItems.value = createContainerItems(containerContent, 50, { skin: unboxedSkin, index: 45 })
@@ -200,10 +220,12 @@ export default defineComponent({
       startRoll(container.name)
 
       openedSkins.value.push(unboxedSkin)
+
       data.unboxedSkin = unboxedSkin
       data.totalCasesOpened++
-      data.spent += (2.2 + parseFloat(container.price.split('$')[1]))
-      data.earned += unboxedSkin.price
+
+      data.spent += Number((2.2 + parseFloat(container.price.split('$')[1])).toFixed(2))
+      data.earned += Number(unboxedSkin.price.toFixed(2))
       return { unboxedSkin }
     }
 
@@ -220,9 +242,8 @@ export default defineComponent({
 
       const boxV2 = document.querySelector('#items')
       if (boxV2) {
-        (boxV2 as HTMLElement).style.transition = '6s';
-        (boxV2 as HTMLElement).style.transitionTimingFunction = 'cubic-bezier(0,0.11,0.33,1)';
-        (boxV2 as HTMLElement).style.marginLeft = landLine
+        setTransition((boxV2 as HTMLElement))
+        setTimeout(() => { (boxV2 as HTMLElement).style.marginLeft = landLine }, 50)
 
         setTimeout(() => {
           if (openCaseBtn) {
@@ -233,6 +254,11 @@ export default defineComponent({
           displaySkin()
         }, 7000)
       }
+    }
+
+    const setTransition = (element: HTMLElement) => {
+      element.style.transition = '6s'
+      element.style.transitionTimingFunction = 'cubic-bezier(0,0.11,0.33,1)'
     }
 
     const resetToZero = (box: HTMLElement) => {
@@ -265,20 +291,131 @@ export default defineComponent({
       return Math.random() * (maxFloat - minFloat) + minFloat
     }
 
-    return { data, unbox, container, openedSkins, containerItems, allDifferentItemsInThisContainer, openingContainer, skinWinner, contentShowcase }
+    return { data, unbox, container, openedSkins, containerItems, allDifferentItemsInThisContainer, openingContainer, skinWinner, contentShowcase, updateFloatLength }
   }
 })
 </script>
 
 <style scoped>
-.case_spin{
+.test {
+  height: 100%;
+  width: 100%;
+  min-height: 35rem;
+}
+
+.test02 {
+
   position: relative;
   width: 75%;
-  height: 20rem;
+  margin: auto;
+}
+
+.itemRarity6 {
+  background: rgb(176, 195, 217);
+  background: radial-gradient(
+    circle farthest-side,
+    rgb(176, 195, 217),
+    rgb(156, 175, 197)
+  );
+}
+.itemRarity5 {
+  background: rgb(94, 152, 217);
+  background: radial-gradient(
+    circle farthest-side,
+    rgb(94, 152, 217),
+    rgb(74, 132, 197)
+  );
+}
+.itemRarity4 {
+  background: rgb(75, 105, 255);
+  background: radial-gradient(
+    circle farthest-side,
+    rgb(75, 105, 255),
+    rgb(55, 85, 235)
+  );
+}
+.itemRarity3 {
+  background: rgb(136, 71, 255);
+  background: radial-gradient(
+    circle farthest-side,
+    rgb(136, 71, 255),
+    rgb(116, 51, 235)
+  );
+}
+.itemRarity2 {
+  background: rgb(211, 44, 230);
+  background: radial-gradient(
+    circle farthest-side,
+    rgb(211, 44, 230),
+    rgb(191, 24, 210)
+  );
+}
+.itemRarity1 {
+  background: rgb(235, 75, 75);
+  background: radial-gradient(
+    circle farthest-side,
+    rgb(235, 75, 75),
+    rgb(215, 55, 55)
+  );
+}
+.itemRarity0 {
+  background: rgb(255, 215, 0);
+  background: radial-gradient(
+    circle farthest-side,
+    rgb(255, 215, 0),
+    rgb(235, 195, 0)
+  );
+}
+
+.case_items_middle {
+  top: 195px;
+  height: 110px;
+  left: 50%;
+  position: absolute;
+  border-right: 1px solid #aa3;
+  border-left: 1px solid #aa3;
+  margin: auto;
+  z-index: 20;
+  box-shadow: 0px 0px 1px 0px #000;
+}
+
+.case_showcase {
+  height: 100%;
+  width: 100%;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 75rem;
+}
+
+.case_spin {
+  position: absolute;
+  width: 75%;
+  height: 100%;
+  max-height: 20rem;
   overflow: hidden;
   white-space: nowrap;
   margin:auto;
   z-index: 5;
+}
+
+.unboxed_skin {
+  position: absolute;
+  max-height: 100%;
+
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  z-index: 10;
+}
+
+.case_item_img {
+  max-width: 75%;
+  width: auto;
+  position: relative;
+  margin: 0;
+  z-index: 2;
 }
 
 .case_preitemscircle{
@@ -323,15 +460,21 @@ export default defineComponent({
   border-color: #ff0000 transparent transparent transparent;
 }
 
-.case_showcase {
+.showcase-bg {
+  background-image: url(https://www.csgowallpapers.com/assets/images/original_compressed/csgowallpaper_207536990031_1566431947_134657136861.png);
+  /* Add the blur effect */
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+
+  /* Full height */
   height: 100%;
-  position: relative;
-  transition: 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
-  max-width: 75rem;
-  background-image: url(https://cdn.discordapp.com/attachments/719496602053640203/744902293614493726/Backgroundblack.png);
+  position: absolute;
+  z-index: -5;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 </style>

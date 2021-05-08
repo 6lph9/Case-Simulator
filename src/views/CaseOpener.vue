@@ -1,8 +1,8 @@
 <template>
   <div id="case-opening">
-    <div class="d-flex flex-column justify-content-center align-items-center position-relative bg-warning test">
-      <div v-show="contentShowcase" class="case_showcase position-relative bg-primary">
-        <div class="showcase-bg" />
+    <div class="d-flex flex-column justify-content-center align-items-center position-relative test">
+      <div class="showcase-bg" />
+      <div v-show="contentShowcase" class="case_showcase position-relative">
         <div class="mt-2">
           <ContainerContent
             v-for="(item, index) in allDifferentItemsInThisContainer"
@@ -13,8 +13,8 @@
         </div>
       </div>
 
-      <div id="case_spin" class="case_spin bg-danger" v-show="openingContainer">
-        <div class="case_preitemslinear bg-secondary">
+      <div id="case_spin" class="case_spin" v-show="openingContainer">
+        <div class="case_preitemslinear">
           <div id="items" style="margin-left: 50px; transition: all 6s cubic-bezier(0, 0.11, 0.33, 1) 0s;">
             <ContainerItem
               v-for="(item, index) in containerItems"
@@ -38,10 +38,8 @@
         <h4 v-if="data.unboxedSkin.float" @click="updateFloatLength()" style="cursor: pointer">Float: {{ data.unboxedSkin.float.toFixed(data.floatDecimal) }}</h4>
         <h4>{{ data.unboxedSkin.price }} €</h4>
       </div>
-
-      <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
     </div>
-
+    <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
     <div>
       overall stats
       <p>Opened Cases: {{ data.totalCasesOpened }}</p>
@@ -210,6 +208,7 @@ export default defineComponent({
     const unbox = () => {
       const containerContent = container.content
       contentShowcase.value = false
+      skinWinner.value = false
       openingContainer.value = true
 
       const unboxedSkin = chooseItem(containerContent)
@@ -304,7 +303,6 @@ export default defineComponent({
 }
 
 .test02 {
-
   position: relative;
   width: 75%;
   margin: auto;
@@ -402,11 +400,6 @@ export default defineComponent({
 
 .unboxed_skin {
   position: absolute;
-  max-height: 100%;
-
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-
   z-index: 10;
 }
 

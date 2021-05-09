@@ -64,6 +64,7 @@ import { defineComponent, reactive, Ref, ref } from 'vue'
 import ContainerItem from '@/components/containerItem.vue'
 import ContainerContent from '@/components/containerContent.vue'
 import caseData from '@/testData/containers.json'
+import knives from '@/testData/knives.json'
 
 export default defineComponent({
   name: 'CaseOpener',
@@ -176,9 +177,13 @@ export default defineComponent({
     const chooseItem = (containerContent: any[][]) => {
       const rarity = getRarity()
 
-      const possibleSkins = containerContent[rarity]
-
-      const skin = possibleSkins[(randomNumber(1, possibleSkins.length) - 1)]
+      let skin
+      if (rarity === 0) {
+        skin = knives[(randomNumber(1, knives.length) - 1)]
+      } else {
+        const possibleSkins = containerContent[rarity]
+        skin = possibleSkins[(randomNumber(1, possibleSkins.length) - 1)]
+      }
 
       const float = createFloat(skin.min, skin.max)
       const condition = getCondition(float)

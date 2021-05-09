@@ -42,15 +42,20 @@
     </div>
     <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
 
-    <div id="stats">
-      overall stats
-      <p>Opened Cases: {{ data.totalCasesOpened }}</p>
-      <p>spent: {{ data.spent.toFixed(2) }} €</p>
-      <p>earned: {{ data.earned.toFixed(2) }} €</p>
-      <p>profit: {{ (data.earned - data.spent).toFixed(2) }} €</p>
-      <p v-if="data.earned > 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
-      <p v-else>profit: 0 %</p>
-      <div v-for="(skin, index) in openedSkins" :key="index">{{ skin.name }}</div>
+    <div id="stats" class="d-flex flex-row justify-content-around">
+      <div>
+        <p>Opened Cases: {{ data.totalCasesOpened }}</p>
+        <p>spent: {{ data.spent.toFixed(2) }} €</p>
+        <p>earned: {{ data.earned.toFixed(2) }} €</p>
+        <p>profit: {{ (data.earned - data.spent).toFixed(2) }} €</p>
+        <p v-if="data.earned > 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
+        <p v-else>profit: 0 %</p>
+      </div>
+      <div class="d-flex flex-column">
+        <div class="text-start" v-for="(skin, index) in openedSkins" :key="index">
+          {{ index + 1 }}. {{ skin.name }}
+        </div>
+      </div>
     </div>
 
     <div id="settings">

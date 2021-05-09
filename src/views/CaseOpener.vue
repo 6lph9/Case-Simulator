@@ -15,15 +15,16 @@
 
       <div id="case_spin" class="case_spin" v-show="openingContainer">
         <div class="case_preitemslinear">
-          <div id="items" style="margin-left: 50px; transition: all 6s cubic-bezier(0, 0.11, 0.33, 1) 0s;">
+          <div id="items" class="spin_div" style="margin-left: 25px; transition: all 6s cubic-bezier(0, 0.11, 0.33, 1) 0s;">
             <ContainerItem
               v-for="(item, index) in containerItems"
+              :class="[index ? 'item' + index : '']"
               :key="index"
               :img="item.icon"
               :name="item.name"
               :rarity="item.rarity" />
           </div>
-          <div class="case_items_middle"></div>
+          <div class="case_items_middle" />
         </div>
       </div>
 
@@ -40,20 +41,21 @@
       </div>
     </div>
     <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
+
     <div id="stats">
       overall stats
       <p>Opened Cases: {{ data.totalCasesOpened }}</p>
-      <p>spent: {{ data.spent }} €</p>
+      <p>spent: {{ data.spent.toFixed(2) }} €</p>
       <p>earned: {{ data.earned.toFixed(2) }} €</p>
       <p>profit: {{ (data.earned - data.spent).toFixed(2) }} €</p>
       <p v-if="data.earned > 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
       <p v-else>profit: 0 %</p>
       <div v-for="(skin, index) in openedSkins" :key="index">{{ skin.name }}</div>
     </div>
+
     <div id="settings">
       <h4>Spin time: {{ data.spinTime }}</h4>
     </div>
-
   </div>
 </template>
 
@@ -240,14 +242,15 @@ export default defineComponent({
         openCaseBtn.classList.add('disabled')
       }
 
-      var lineArrays = ['-7030px', '-7040px', '-7050px', '-7060px', '-7070px', '-7080px', '-7090px', '-7100px', '-7110px', '-7120px', '-7130px', '-7140px', '-7150px', '-7160px', '-7170px', '-7180px']
-      var landLine = lineArrays[Math.floor(Math.random() * lineArrays.length)]
+      const lineMin = 495.5
+      const lineMax = 506.5
+      const landLine = createFloat(lineMin, lineMax)
       console.log(landLine)
 
       const boxV2 = document.querySelector('#items')
       if (boxV2) {
         setTransition((boxV2 as HTMLElement))
-        setTimeout(() => { (boxV2 as HTMLElement).style.marginLeft = landLine }, 50)
+        setTimeout(() => { (boxV2 as HTMLElement).style.marginLeft = '-' + landLine + 'rem' }, 50)
 
         setTimeout(() => {
           if (openCaseBtn) {
@@ -313,6 +316,114 @@ export default defineComponent({
   margin: auto;
 }
 
+.case_showcase {
+  height: 100%;
+  width: 100%;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 75rem;
+}
+
+.case_spin {
+  position: absolute;
+  width: 65rem;
+  height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+}
+
+.case_items_middle {
+  position: absolute;
+
+  height: 118.5px;
+  width: 2px;
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+
+  border-right: 1px solid #aa3;
+  border-left: 1px solid #aa3;
+  z-index: 20;
+  box-shadow: 0px 0px 1px 0px #000;
+}
+
+.unboxed_skin {
+  position: absolute;
+  z-index: 10;
+}
+
+.case_item_img {
+  max-width: 75%;
+  width: auto;
+  position: relative;
+  margin: 0;
+  z-index: 2;
+}
+
+.case_preitemscircle{
+  z-index:2;
+  position: relative;
+  height: 110px;
+  -webkit-mask-image: radial-gradient(circle closest-side, #fff0 165px,#000 166px);
+}
+
+.animationAreaItems {
+  height: 150px;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+
+.animationAreaItems:before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 48%;
+  border-style: solid;
+  border-width: 0 20px 20px 20px;
+  border-color: transparent transparent #ff0000 transparent;
+}
+
+.animationAreaItems:after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 48%;
+  border-style: solid;
+  border-width: 20px 20px 0 20px;
+  border-color: #ff0000 transparent transparent transparent;
+}
+
+.showcase-bg {
+  background-image: url(https://www.csgowallpapers.com/assets/images/original_compressed/csgowallpaper_207536990031_1566431947_134657136861.png);
+  /* Add the blur effect */
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+
+  /* Full height */
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: -5;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .itemRarity6 {
   background: rgb(176, 195, 217);
   background: radial-gradient(
@@ -368,111 +479,5 @@ export default defineComponent({
     rgb(255, 215, 0),
     rgb(235, 195, 0)
   );
-}
-
-.case_items_middle {
-  top: 195px;
-  height: 110px;
-  left: 50%;
-  position: absolute;
-  border-right: 1px solid #aa3;
-  border-left: 1px solid #aa3;
-  margin: auto;
-  z-index: 20;
-  box-shadow: 0px 0px 1px 0px #000;
-}
-
-.case_showcase {
-  height: 100%;
-  width: 100%;
-  transition: 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 75rem;
-}
-
-.case_spin {
-  position: absolute;
-  width: 75%;
-  height: 100%;
-  max-height: 20rem;
-  overflow: hidden;
-  white-space: nowrap;
-  margin:auto;
-  z-index: 5;
-}
-
-.unboxed_skin {
-  position: absolute;
-  z-index: 10;
-}
-
-.case_item_img {
-  max-width: 75%;
-  width: auto;
-  position: relative;
-  margin: 0;
-  z-index: 2;
-}
-
-.case_preitemscircle{
-  z-index:2;
-  position: relative;
-  height: 110px;
-  -webkit-mask-image: radial-gradient(circle closest-side, #fff0 165px,#000 166px);
-}
-
-.case_preitemslinear{
-  -webkit-mask-image: linear-gradient(to left,#fff0 0%,#000 10%,#000 90%,#fff0 100%);
-}
-
-.animationAreaItems {
-  height: 150px;
-  position: relative;
-  text-align: center;
-  overflow: hidden;
-}
-
-.animationAreaItems:before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  bottom: 0;
-  left: 48%;
-  border-style: solid;
-  border-width: 0 20px 20px 20px;
-  border-color: transparent transparent #ff0000 transparent;
-}
-
-.animationAreaItems:after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  bottom: 0;
-  left: 48%;
-  border-style: solid;
-  border-width: 20px 20px 0 20px;
-  border-color: #ff0000 transparent transparent transparent;
-}
-
-.showcase-bg {
-  background-image: url(https://www.csgowallpapers.com/assets/images/original_compressed/csgowallpaper_207536990031_1566431947_134657136861.png);
-  /* Add the blur effect */
-  filter: blur(5px);
-  -webkit-filter: blur(5px);
-
-  /* Full height */
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: -5;
-
-  /* Center and scale the image nicely */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 </style>

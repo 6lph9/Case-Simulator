@@ -205,10 +205,18 @@ export default defineComponent({
 
       if (statTrak) {
         special = 'StatTrak™'
-        price = skin.conditions[condition].stattrak_price
+        if (skin.conditions[condition]) {
+          price = skin.conditions[condition].price
+        } else {
+          price = skin.conditions['Not Painted'].price
+        }
         icon_id = skin.icon
       } else {
-        price = skin.conditions[condition].price
+        if (skin.conditions[condition]) {
+          price = skin.conditions[condition].price
+        } else {
+          price = skin.conditions['Not Painted'].price
+        }
         icon_id = skin.icon
       }
 

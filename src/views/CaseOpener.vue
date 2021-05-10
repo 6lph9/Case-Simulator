@@ -40,7 +40,7 @@
         <h4>{{ data.unboxedSkin.price }} €</h4>
       </div>
     </div>
-    <button class="btn btn-info" id="openContainer" @click="unbox()">Open {{ container.name }}</button>
+    <button class="btn btn-info" id="openContainer" :disabled="openingContainer" @click="unbox()">Open {{ container.name }}</button>
 
     <div id="stats" class="d-flex flex-row justify-content-around">
       <div>
@@ -52,14 +52,18 @@
         <p v-else>profit: 0 %</p>
       </div>
       <div class="d-flex flex-column">
-        <div class="text-start" v-for="(skin, index) in openedSkins" :key="index">
-          {{ index + 1 }}. {{ skin.name }}
+        <div class="text-start text-white" v-for="(skin, index) in openedSkins" :key="index" :class="[skin.rarity ? 'itemRarity' + skin.rarity : '']">
+          <div class="d-flex flex-row justify-content-between" style="width: 25rem">
+            <div>{{ index + 1 }}. {{ skin.name }}</div>
+            <div>{{ skin.price }} €</div>
+          </div>
         </div>
       </div>
     </div>
 
     <div id="settings">
       <h4>Spin time: {{ data.spinTime }}</h4>
+      <input v-model="data.spinTime" type="text">
     </div>
   </div>
 </template>
@@ -249,23 +253,22 @@ export default defineComponent({
       const openCaseBtn = document.querySelector('#openContainer')
       if (openCaseBtn) {
         openCaseBtn.innerHTML = 'Rolling ...'
-        openCaseBtn.classList.add('disabled')
       }
 
-      const lineMin = 495.5
-      const lineMax = 506.5
-      const landLine = createFloat(lineMin, lineMax)
+      const lineMin = 6960
+      const lineMax = 7120
+      const landLine = randomNumber(lineMin, lineMax)
       console.log(landLine)
 
       const boxV2 = document.querySelector('#items')
       if (boxV2) {
         setTransition((boxV2 as HTMLElement))
-        setTimeout(() => { (boxV2 as HTMLElement).style.marginLeft = '-' + landLine + 'rem' }, 50)
+        // setTimeout(() => { (boxV2 as HTMLElement).style.marginLeft = '-' + landLine + 'rem' }, 50)
+        setTimeout(() => { (boxV2 as HTMLElement).style.marginLeft = '-' + landLine + 'px' }, 50)
 
         setTimeout(() => {
           if (openCaseBtn) {
             openCaseBtn.innerHTML = 'Open ' + containerName
-            openCaseBtn.classList.remove('disabled')
             resetToZero(boxV2 as HTMLElement)
           }
           displaySkin()

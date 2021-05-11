@@ -50,20 +50,19 @@
         <p>profit: {{ (data.earned - data.spent).toFixed(2) }} €</p>
         <p v-if="data.earned > 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
         <p v-else>profit: 0 %</p>
+        <div id="settings">
+          <h4>Spin time: {{ data.spinTime }}</h4>
+          <input v-model="data.spinTime" type="text">
+        </div>j
       </div>
-      <div class="d-flex flex-column">
-        <div class="text-start text-white" v-for="(skin, index) in openedSkins" :key="index" :class="[skin.rarity ? 'itemRarity' + skin.rarity : '']">
-          <div class="d-flex flex-row justify-content-between" style="width: 25rem">
-            <div>{{ index + 1 }}. {{ skin.name }}</div>
+      <div class="d-flex flex-column overflow-auto" style="max-height: 20rem;">
+        <div class="text-start text-white p-1" v-for="(skin, index) in openedSkins" :key="index" :class="[(skin.rarity || skin.rarity == 0) ? 'itemRarity' + skin.rarity : '']">
+          <div class="d-flex flex-row justify-content-between" style="width: 30rem;">
+            <div>{{ index + 1 }}. {{ skin.special }} {{ skin.name }} ({{ getShortCondition(skin.condition) }})</div>
             <div>{{ skin.price }} €</div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div id="settings">
-      <h4>Spin time: {{ data.spinTime }}</h4>
-      <input v-model="data.spinTime" type="text">
     </div>
   </div>
 </template>
@@ -185,10 +184,15 @@ export default defineComponent({
 
     const chooseItem = (containerContent: any[][]) => {
       const rarity = getRarity()
+      const statTrak = isStatTrak()
 
       let skin
       if (rarity === 0) {
-        skin = knives[(randomNumber(1, knives.length) - 1)]
+        if (statTrak) {
+          skin = knives[(randomNumber((knives.length / 2), (knives.length)) - 1)]
+        } else {
+          skin = knives[(randomNumber(1, (knives.length / 2)) - 1)]
+        }
       } else {
         const possibleSkins = containerContent[rarity]
         skin = possibleSkins[(randomNumber(1, possibleSkins.length) - 1)]
@@ -196,8 +200,6 @@ export default defineComponent({
 
       const float = createFloat(skin.min, skin.max)
       const condition = getCondition(float)
-
-      const statTrak = isStatTrak()
 
       let special
       let price
@@ -208,6 +210,7 @@ export default defineComponent({
         if (skin.conditions[condition]) {
           price = skin.conditions[condition].price
         } else {
+          console.log('we have problem husten', skin)
           price = skin.conditions['Not Painted'].price
         }
         icon_id = skin.icon
@@ -215,6 +218,7 @@ export default defineComponent({
         if (skin.conditions[condition]) {
           price = skin.conditions[condition].price
         } else {
+          console.log('we have problem husten', skin)
           price = skin.conditions['Not Painted'].price
         }
         icon_id = skin.icon
@@ -251,7 +255,7 @@ export default defineComponent({
       setTimeout(() => {
         data.totalCasesOpened++
         openedSkins.value.push(unboxedSkin)
-        data.spent += Number((2.2 + parseFloat(container.price.split('$')[1])).toFixed(2))
+        data.spent += Number((2.2 + parseFloat(container.price)).toFixed(2))
         data.earned += Number(unboxedSkin.price.toFixed(2))
       }, data.spinTime)
       return { unboxedSkin }
@@ -319,7 +323,23 @@ export default defineComponent({
       return Math.random() * (maxFloat - minFloat) + minFloat
     }
 
-    return { data, unbox, container, openedSkins, containerItems, allDifferentItemsInThisContainer, openingContainer, skinWinner, contentShowcase, updateFloatLength }
+    const getShortCondition = (condition: string): string => {
+      switch (condition) {
+        case 'Factory New':
+          return 'FN'
+        case 'Minimal Wear':
+          return 'MW'
+        case 'Field-Tested':
+          return 'FT'
+        case 'Well-Worn':
+          return 'WW'
+        case 'Battle-Scarred':
+          return 'BS'
+      }
+      return 'F'
+    }
+
+    return { data, unbox, container, openedSkins, containerItems, allDifferentItemsInThisContainer, openingContainer, skinWinner, contentShowcase, updateFloatLength, getShortCondition }
   }
 })
 </script>
@@ -382,10 +402,11 @@ export default defineComponent({
 }
 
 .case_item_img {
-  max-width: 75%;
+  max-width: 70%;
   width: auto;
   position: relative;
   margin: 0;
+  padding: 0;
   z-index: 2;
 }
 

@@ -37,7 +37,7 @@
 
         <img :src="data.unboxedSkin.icon" :alt="data.unboxedSkin.name" class="case_item_img">
         <h4 v-if="data.unboxedSkin.float" @click="updateFloatLength()" style="cursor: pointer">Float: {{ data.unboxedSkin.float.toFixed(data.floatDecimal) }}</h4>
-        <h4>{{ data.unboxedSkin.price }} €</h4>
+        <h4>{{ data.unboxedSkin.price / 100 }} €</h4>
       </div>
     </div>
     <button class="btn btn-info" id="openContainer" :disabled="openingContainer" @click="unbox()">Open {{ container.name }}</button>
@@ -45,21 +45,23 @@
     <div id="stats" class="d-flex flex-row justify-content-around">
       <div>
         <p>Opened Cases: {{ data.totalCasesOpened }}</p>
-        <p>spent: {{ data.spent.toFixed(2) }} €</p>
-        <p>earned: {{ data.earned.toFixed(2) }} €</p>
-        <p>profit: {{ (data.earned - data.spent).toFixed(2) }} €</p>
-        <p v-if="data.earned > 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
+        <p>spent: {{ data.spent / 100 }} €</p>
+        <p>earned: {{ data.earned / 100 }} €</p>
+        <p>profit: {{ (data.earned - data.spent) / 100 }} €</p>
+        <p v-if="data.earned >= 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
         <p v-else>profit: 0 %</p>
+
         <div id="settings">
           <h4>Spin time: {{ data.spinTime }}</h4>
           <input v-model="data.spinTime" type="text">
-        </div>j
+        </div>
+
       </div>
       <div class="d-flex flex-column overflow-auto" style="max-height: 20rem;">
         <div class="text-start text-white p-1" v-for="(skin, index) in openedSkins" :key="index" :class="[(skin.rarity || skin.rarity == 0) ? 'itemRarity' + skin.rarity : '']">
           <div class="d-flex flex-row justify-content-between" style="width: 30rem;">
             <div>{{ index + 1 }}. {{ skin.special }} {{ skin.name }} ({{ getShortCondition(skin.condition) }})</div>
-            <div>{{ skin.price }} €</div>
+            <div>{{ skin.price / 100 }} €</div>
           </div>
         </div>
       </div>
@@ -73,6 +75,7 @@ import ContainerItem from '@/components/containerItem.vue'
 import ContainerContent from '@/components/containerContent.vue'
 import caseData from '@/testData/containers.json'
 import knives from '@/testData/knives.json'
+import gloves from '@/testData/gloves.json'
 
 export default defineComponent({
   name: 'CaseOpener',
@@ -182,21 +185,28 @@ export default defineComponent({
       else data.floatDecimal = 6
     }
 
-    const chooseItem = (containerContent: any[][]) => {
+    const chooseItem = (containerContent: any[]) => {
       const rarity = getRarity()
       const statTrak = isStatTrak()
 
       let skin
       if (rarity === 0) {
-        if (statTrak) {
-          skin = knives[(randomNumber((knives.length / 2), (knives.length)) - 1)]
+        window.alert('jz wirds gelb')
+        if (containerContent[0].name === '★ Gloves ★') {
+          skin = gloves[(randomNumber(1, gloves.length) - 1)]
         } else {
-          skin = knives[(randomNumber(1, (knives.length / 2)) - 1)]
+          if (statTrak) {
+            skin = knives[(randomNumber((knives.length / 2), (knives.length)) - 1)]
+          } else {
+            skin = knives[(randomNumber(1, (knives.length / 2)) - 1)]
+          }
         }
+        skin.icon = 'https://steamcommunity-a.akamaihd.net/economy/image/' + skin.icon
       } else {
         const possibleSkins = containerContent[rarity]
         skin = possibleSkins[(randomNumber(1, possibleSkins.length) - 1)]
       }
+      console.log('icon normal', skin.icon)
 
       const float = createFloat(skin.min, skin.max)
       const condition = getCondition(float)
@@ -255,17 +265,16 @@ export default defineComponent({
       setTimeout(() => {
         data.totalCasesOpened++
         openedSkins.value.push(unboxedSkin)
-        data.spent += Number((2.2 + parseFloat(container.price)).toFixed(2))
-        data.earned += Number(unboxedSkin.price.toFixed(2))
+        data.spent += (220 + container.price)
+        data.earned += unboxedSkin.price
       }, data.spinTime)
+
       return { unboxedSkin }
     }
 
     function startRoll (containerName: string) {
       const openCaseBtn = document.querySelector('#openContainer')
-      if (openCaseBtn) {
-        openCaseBtn.innerHTML = 'Rolling ...'
-      }
+      if (openCaseBtn) openCaseBtn.innerHTML = 'Rolling ...'
 
       const lineMin = 6960
       const lineMax = 7120
@@ -313,16 +322,6 @@ export default defineComponent({
       else return 'FUCK YOU'
     }
 
-    const isStatTrak = (): boolean => {
-      const statTrakChance = randomNumber(1, 10)
-      if (statTrakChance === 10) return true
-      return false
-    }
-
-    const createFloat = (minFloat: number, maxFloat: number): number => {
-      return Math.random() * (maxFloat - minFloat) + minFloat
-    }
-
     const getShortCondition = (condition: string): string => {
       switch (condition) {
         case 'Factory New':
@@ -337,6 +336,16 @@ export default defineComponent({
           return 'BS'
       }
       return 'F'
+    }
+
+    const isStatTrak = (): boolean => {
+      const statTrakChance = randomNumber(1, 10)
+      if (statTrakChance === 10) return true
+      return false
+    }
+
+    const createFloat = (minFloat: number, maxFloat: number): number => {
+      return Math.random() * (maxFloat - minFloat) + minFloat
     }
 
     return { data, unbox, container, openedSkins, containerItems, allDifferentItemsInThisContainer, openingContainer, skinWinner, contentShowcase, updateFloatLength, getShortCondition }

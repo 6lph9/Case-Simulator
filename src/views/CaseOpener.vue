@@ -50,7 +50,7 @@
             <th>Opened Cases: </th>
             <td>{{ data.totalCasesOpened }}</td>
           </tr>
-          <tr class="p-3">
+          <tr>
             <th>Spent: </th>
             <td>{{ data.spent / 100 }} €</td>
           </tr>
@@ -66,6 +66,29 @@
             <th>Profit (Total): </th>
             <td v-if="data.earned >= 0 && data.spent > 0">{{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</td>
             <td v-else>0 %</td>
+          </tr>
+        </table>
+
+        <table style="width: 100%; min-width: 250px; color: white;">
+          <tr class="itemRarity4">
+            <td>Mil-Spec:</td>
+            <td>{{ data.amountRarity4 }}</td>
+          </tr>
+          <tr class="itemRarity3">
+            <td>Restricted: </td>
+            <td>{{ data.amountRarity3 }}</td>
+          </tr>
+          <tr class="itemRarity2">
+            <td>Classified: </td>
+            <td>{{ data.amountRarity2 }}</td>
+          </tr>
+          <tr class="itemRarity1">
+            <td>Covert: </td>
+            <td>{{ data.amountRarity1 }}</td>
+          </tr>
+          <tr class="itemRarity0">
+            <td>Rare Special Item: </td>
+            <td>{{ data.amountRarity0 }}</td>
           </tr>
         </table>
 
@@ -196,6 +219,14 @@ export default defineComponent({
       earned: 0,
       unboxedSkin: {},
 
+      amountRarity6: 0,
+      amountRarity5: 0,
+      amountRarity4: 0,
+      amountRarity3: 0,
+      amountRarity2: 0,
+      amountRarity1: 0,
+      amountRarity0: 0,
+
       floatDecimal: 6,
       spinTime: 7000
     })
@@ -287,9 +318,39 @@ export default defineComponent({
         openedSkins.value.push(unboxedSkin)
         data.spent += (220 + container.price)
         data.earned += unboxedSkin.price
+        updateRarityAmount(unboxedSkin.rarity)
       }, data.spinTime)
 
       return { unboxedSkin }
+    }
+
+    const updateRarityAmount = (rarity: number) => {
+      switch (rarity) {
+        case 6:
+          data.amountRarity6++
+          break
+        case 5:
+          data.amountRarity5++
+          break
+        case 4:
+          data.amountRarity4++
+          break
+        case 3:
+          data.amountRarity3++
+          break
+        case 2:
+          data.amountRarity2++
+          break
+        case 1:
+          data.amountRarity1++
+          break
+        case 0:
+          data.amountRarity0++
+          break
+        default:
+          window.alert('alarm im darm!')
+          break
+      }
     }
 
     function startRoll (containerName: string) {

@@ -12,10 +12,7 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
+  font-size: 16px;
 }
 
 #nav a {

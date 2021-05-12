@@ -3,7 +3,7 @@
     <div class="d-flex flex-column justify-content-center align-items-center position-relative test">
       <div class="showcase-bg" />
       <div v-show="contentShowcase" class="case_showcase position-relative">
-        <div class="mt-2">
+        <div>
           <ContainerContent
             v-for="(item, index) in allDifferentItemsInThisContainer"
             :key="index"
@@ -57,10 +57,10 @@
         </div>
 
       </div>
-      <div class="d-flex flex-column overflow-auto" style="max-height: 20rem;">
-        <div class="text-start text-white p-1" v-for="(skin, index) in openedSkins" :key="index" :class="[(skin.rarity || skin.rarity == 0) ? 'itemRarity' + skin.rarity : '']">
-          <div class="d-flex flex-row justify-content-between" style="width: 30rem;">
-            <div>{{ index + 1 }}. {{ skin.special }} {{ skin.name }} ({{ getShortCondition(skin.condition) }})</div>
+      <div id="opened-skins" class="d-flex flex-column overflow-auto" style="height: 100%; max-height: 380px">
+        <div class="text-start text-white p-1" v-for="(skin, index) in openedSkins.slice().reverse()" :key="index" :class="[(skin.rarity || skin.rarity == 0) ? 'itemRarity' + skin.rarity : '']">
+          <div class="d-flex flex-row justify-content-between" style="width: 30rem; font-size: 12px">
+            <div>{{ openedSkins.length - index }}. {{ skin.special }} {{ skin.name }} ({{ getShortCondition(skin.condition) }})</div>
             <div>{{ skin.price / 100 }} €</div>
           </div>
         </div>
@@ -357,7 +357,7 @@ export default defineComponent({
 .test {
   height: 100%;
   width: 100%;
-  min-height: 35rem;
+  min-height: 30rem;
 }
 
 .test02 {
@@ -411,7 +411,7 @@ export default defineComponent({
 }
 
 .case_item_img {
-  max-width: 70%;
+  max-width: 65%;
   width: auto;
   position: relative;
   margin: 0;

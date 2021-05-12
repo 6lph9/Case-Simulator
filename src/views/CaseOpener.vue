@@ -44,12 +44,30 @@
 
     <div id="stats" class="d-flex flex-row justify-content-around">
       <div>
-        <p>Opened Cases: {{ data.totalCasesOpened }}</p>
-        <p>spent: {{ data.spent / 100 }} €</p>
-        <p>earned: {{ data.earned / 100 }} €</p>
-        <p>profit: {{ (data.earned - data.spent) / 100 }} €</p>
-        <p v-if="data.earned >= 0 && data.spent > 0">profit: {{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</p>
-        <p v-else>profit: 0 %</p>
+        <h1 class="text-center">Statistics</h1>
+        <table style="width: 100%; min-width: 250px">
+          <tr>
+            <th>Opened Cases: </th>
+            <td>{{ data.totalCasesOpened }}</td>
+          </tr>
+          <tr class="p-3">
+            <th>Spent: </th>
+            <td>{{ data.spent / 100 }} €</td>
+          </tr>
+          <tr>
+            <th>Earned: </th>
+            <td>{{ data.earned / 100 }} €</td>
+          </tr>
+          <tr>
+            <th>Profit (%): </th>
+            <td>{{ (data.earned - data.spent) / 100 }} €</td>
+          </tr>
+          <tr>
+            <th>Profit (Total): </th>
+            <td v-if="data.earned >= 0 && data.spent > 0">{{ (((data.earned - data.spent) / data.spent) * 100).toFixed(2) }} %</td>
+            <td v-else>0 %</td>
+          </tr>
+        </table>
 
         <div id="settings">
           <h4>Spin time: {{ data.spinTime }}</h4>
@@ -57,6 +75,7 @@
         </div>
 
       </div>
+
       <div id="opened-skins" class="d-flex flex-column overflow-auto" style="height: 100%; max-height: 380px">
         <div class="text-start text-white p-1" v-for="(skin, index) in openedSkins.slice().reverse()" :key="index" :class="[(skin.rarity || skin.rarity == 0) ? 'itemRarity' + skin.rarity : '']">
           <div class="d-flex flex-row justify-content-between" style="width: 30rem; font-size: 12px">
@@ -65,6 +84,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -354,6 +374,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
+th {
+  text-align: start;
+  padding-top: 7px;
+}
+
+td {
+  text-align: right;
+}
+
 .test {
   height: 100%;
   width: 100%;

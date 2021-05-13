@@ -40,7 +40,7 @@
         <h4>{{ data.unboxedSkin.price / 100 }} €</h4>
       </div>
     </div>
-    <button class="btn btn-info" id="openContainer" :disabled="openingContainer" @click="unbox()">Open {{ container.name }}</button>
+    <button class="btn btn-success" id="openContainer" :disabled="openingContainer" @click="unbox()">Open {{ container.name }}</button>
 
     <div id="stats" class="d-flex flex-row justify-content-around">
       <div>
